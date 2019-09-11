@@ -1,0 +1,72 @@
+ssh -i "/Users/pkuchikulla/Documents/FieldCloud/pk_se.pem" cloudbreak@54.215.225.243
+
+ssh -i "/Users/pkuchikulla/Documents/FieldCloud/field.pem" cloudbreak@34.83.175.193
+
+ssh -i "/Users/pkuchikulla/Documents/FieldCloud/pk_se.pem" cloudbreak@
+
+
+
+./kafka-topics.sh --create --zookeeper 13.56.158.135:2181 --replication-factor 1 --partitions 1 --topic truckevent
+
+./kafka-topics.sh --list --zookeeper 13.56.158.135:2181
+
+
+java -cp target/Tutorial-1.0-SNAPSHOT.jar com.hortonworks.tutorials.tutorial1.TruckEventsProducer 13.56.158.135:6667 13.56.158.135:2181
+
+/usr/hdp/current/kafka-broker/bin/kafka-console-consumer.sh --zookeeper sandbox.hortonworks.com:2181 --topic truckevent --from-beginning
+
+/usr/hdf/current/kafka-broker/bin/kafka-console-consumer.sh --bootstrap-server 54.215.225.243:6667 --topic streams-plaintext-input --from-beginning
+/usr/hdf/current/kafka-broker/bin/kafka-console-producer.sh --broker-list 54.215.225.243:6667 --topic streams-plaintext-input
+
+/usr/hdf/current/kafka-broker/bin/kafka-console-consumer.sh --bootstrap-server sandbox-hdf.hortonworks.com:6667 --topic trucking_data_traffic --from-beginning
+
+
+
+
+/usr/hdf/current/kafka-broker/bin/kafka-topics.sh --create \
+    --zookeeper 13.56.151.119:2181 \
+    --replication-factor 1 \
+    --partitions 1 \
+    --topic streams-plaintext-input
+
+/usr/hdf/current/kafka-broker/bin/kafka-topics.sh --create \
+    --zookeeper 13.56.151.119:2181 \
+    --replication-factor 1 \
+    --partitions 1 \
+    --topic streams-wordcount-output \
+    --config cleanup.policy=compact
+
+
+Ambari - broker - 54.215.225.243  -- 10-0-0-2
+zookeeper - 13.56.151.119 - 10.0.129.71
+
+
+104.196.254.217 -- 10-0-0-3
+10-0-0-2
+35.247.60.174 - 10-0-0-4
+
+
+
+/usr/hdf/current/kafka-broker/bin/kafka-topics.sh --zookeeper 13.56.151.119:2181 --describe
+
+/usr/hdf/current/kafka-broker/bin/kafka-run-class.sh org.apache.kafka.streams.examples.wordcount.WordCountDemo
+
+
+##/usr/hdf/current/kafka-broker/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic streams-plaintext-input
+/usr/hdf/current/kafka-broker/bin/kafka-console-producer.sh --broker-list 54.215.225.243:6667 --topic streams-plaintext-input
+
+
+##/usr/hdf/current/kafka-broker/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+##/usr/hdf/current/kafka-broker/bin/kafka-console-consumer.sh --bootstrap-server localhost:6667 \
+
+/usr/hdf/current/kafka-broker/bin/kafka-console-consumer.sh --bootstrap-server 54.215.225.243:6667 \
+    --topic streams-wordcount-output \
+    --from-beginning \
+    --formatter kafka.tools.DefaultMessageFormatter \
+    --property print.key=true \
+    --property print.value=true \
+    --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+    --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer
+
+
+scp -rp -i /Users/pkuchikulla/Documents/FieldCloud/pk_se.pem cloudbreak@54.215.225.243:/home/cloudbreak/streams.examples/pom.xml /Users/pkuchikulla/Downloads/pom.xml 
